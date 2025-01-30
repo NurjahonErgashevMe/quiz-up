@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+    }
+
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    #admin-button {
+      /* background-color: ; */
+      color: #6e8efb;
+    }
+
+    #start-button {
+      background-color: #a777e3;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Quiz App</h1>
+    <div class="button-container">
+      <button id="start-button">Boshlash</button>
+      <button id="admin-button">Admin uchun</button>
+    </div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    document.getElementById('admin-button').addEventListener('click', () => {
+      ipcRenderer.send('navigate', 'admin');
+    });
+
+    document.getElementById('start-button').addEventListener('click', () => {
+      ipcRenderer.send('navigate', 'quiz');
+    });
+  </script>
+</body>
+
+</html>

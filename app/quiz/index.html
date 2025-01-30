@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="quiz-container">
+        <div id="student-form" class="student-form">
+            <h2>O'quvchi haqida ma'lumot</h2>
+            <div class="form-group">
+                <label for="fullname">Ism va Familiya:</label>
+                <input type="text" id="fullname" required>
+            </div>
+            <div class="form-group">
+                <label for="grade">Sinf:</label>
+                <select id="grade" required>
+                    <option value="">Sinfni tanlang</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subject">Fan:</label>
+                <select id="subject" required>
+                    <option value="">Fanni tanlang</option>
+                    <option value="matematika">Matematika</option>
+                    <option value="fizika">Fizika</option>
+                    <option value="kimyo">Kimyo</option>
+                    <option value="biologiya">Biologiya</option>
+                    <option value="tarix">Tarix</option>
+                    <option value="geografiya">Geografiya</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button class="back-button" id="back-button">← Bosh sahifaga</button>
+                <button id="start-quiz">Testni boshlash</button>
+            </div>
+        </div>
+        <div id="quiz-section" style="display: none;">
+            <div class="header">
+                <span class="question-number">Savol <span id="current-question">1</span> dan <span
+                        id="total-questions">5</span></span>
+                <span class="timer" id="timer">30</span>
+            </div>
+            <div class="question" id="question">
+                Savollar yuklanmoqda...
+            </div>
+            <div class="options" id="options">
+                <!-- Options will be inserted here -->
+            </div>
+            <div class="button-container">
+                <button class="back-button" id="back-button">← Bosh sahifaga</button>
+                <button id="next-btn">Keyingisi →</button>
+            </div>
+        </div>
+        <div class="result-container" id="result-section">
+            <h2>Test natijalari</h2>
+            <div class="score">
+                <span id="score">0</span>
+            </div>
+            <div class="button-container">
+                <button class="back-button" id="restart-button">Qayta boshlash</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
