@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Student Data</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <button class="back-button" id="back-button">← Ortga</button>
+    <div class="upload-container">
+        <h2>O'quvchilarni yuklash</h2>
+        <form id="uploadForm" class="upload-form">
+            <button type="button" id="downloadTemplate" class="template-button">Excel shablonini yuklab olish</button>
+            <div class="form-group">
+                <label for="grade">Sinfni tanlang:</label>
+                <select id="grade" required>
+                    <option value="">Sinfni tanlang</option>
+                    <option value="1">1-sinf</option>
+                    <option value="2">2-sinf</option>
+                    <option value="3">3-sinf</option>
+                    <option value="4">4-sinf</option>
+                    <option value="5">5-sinf</option>
+                    <option value="6">6-sinf</option>
+                    <option value="7">7-sinf</option>
+                    <option value="8">8-sinf</option>
+                    <option value="9">9-sinf</option>
+                    <option value="10">10-sinf</option>
+                    <option value="11">11-sinf</option>
+                </select>
+            </div>
+            <div class="file-input-container">
+                <input type="file" id="excelFile" class="file-input" accept=".xlsx, .xls" required>
+            </div>
+            <button type="submit" class="upload-btn">Faylni yuklash</button>
+        </form>
+        <button class="link-upload-button" id="quiz-upload-button">Savollarni yuklash</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

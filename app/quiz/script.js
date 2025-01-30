@@ -2,7 +2,7 @@ const { ipcRenderer, app } = require('electron');
 const xlsx = require("xlsx");
 const fs = require("fs");
 const path = require("path");
-const { alert } = require('./alert');
+const { alert } = require('../components/alert');
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
@@ -16,16 +16,18 @@ let quizData;
 
 // Event listener for the start quiz button
 document.getElementById('start-quiz').addEventListener('click', () => {
-    const fullnameInput = document.getElementById('fullname');
+    const studentSearch = document.getElementById('student-search');
     const gradeInput = document.getElementById('grade');
     const subjectInput = document.getElementById('subject');
 
-    if (!fullnameInput.value.trim() || !gradeInput.value || !subjectInput.value) {
+    console.log(studentSearch.value)
+
+    if (!studentSearch.value.trim() || !gradeInput.value || !subjectInput.value) {
         alert.show('Пожалуйста, заполните все поля', "error");
         return;
     }
 
-    studentFullName = fullnameInput.value.trim();
+    studentFullName = studentSearch.value.trim();
     studentGrade = gradeInput.value;
     studentSubject = subjectInput.value;
 
@@ -56,7 +58,7 @@ function readQuizTableFromExcel(filePath) {
     console.log('Questions data loaded:', questionsData);
 
     return {
-        questions: questionsData.map((row, index) => ({
+        questions: questionsData.filter(row => row["savol"] && row["variantlar"] && row["tog'ri javob"]).map((row, index) => ({
             id: index + 1,
             question: row["savol"],
             options: row["variantlar"] ? row["variantlar"].split(",").map(opt => opt.trim()) : [],
@@ -72,7 +74,7 @@ async function initializeQuiz() {
         const userDataPath = await ipcRenderer.invoke('get-user-data-path');
         const targetDir = path.join(userDataPath, 'assets', studentGrade, `${studentSubject}.xlsx`);
         quizData = readQuizTableFromExcel(targetDir);
-        currentQuestions = quizData.questions;
+        currentQuestions = quizData.questions
         totalTimeLeft = quizData.totalTimeLimit;
         console.log(quizData, 'quizData')
 
@@ -190,6 +192,54 @@ function showResult() {
     studentResult.textContent = `${studentFullName}, ваш результат:`;
     resultSection.insertBefore(studentResult, resultSection.firstChild);
     clearInterval(timer);
+}
+
+document.getElementById('grade').addEventListener('change', function () {
+    const grade = this.value;
+    // Fetch students for the selected grade and populate the student-search dropdown
+    // This example uses a placeholder function fetchStudents()
+    fetchStudentsForClass(grade).then(students => {
+        const studentSearch = document.getElementById('student-search');
+        studentSearch.innerHTML = '<option value="">O\'quvchini tanlang</option>';
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = `${student.firstName} ${student.lastName}`;
+            option.textContent = `${student.firstName} ${student.lastName}`;
+            studentSearch.appendChild(option);
+        });
+    });
+});
+
+async function fetchStudentsForClass(grade) {
+    try {
+        const userDataPath = await ipcRenderer.invoke('get-user-data-path');
+        const studentsFilePath = path.join(userDataPath, 'assets', grade, 'students.xlsx');
+        // Check if the file exists
+        if (!fs.existsSync(studentsFilePath)) {
+            console.warn('Файл с данными учеников не найден:', studentsFilePath);
+            return [];
+        }
+
+        const studentsData = readStudentsFromExcel(studentsFilePath);
+        return studentsData;
+    } catch (error) {
+        console.error('Ошибка при получении данных учеников:', error);
+        alert.show('Ошибка при загрузке данных учеников. Проверьте формат файла Excel.\n\nДетали ошибки: ' + error.message, "error");
+        return [];
+    }
+}
+
+function readStudentsFromExcel(filePath) {
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(sheet);
+
+    return data.map(row => ({
+        // id: row['ID'], // Assuming there's an 'ID' column
+        firstName: row['Ism'],
+        lastName: row['Familiya']
+    }));
 }
 
 // Запускаем инициализацию при загрузке страницы

@@ -18,3 +18,7 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
 document.getElementById('back-button').addEventListener('click', () => {
     ipcRenderer.send('navigate', 'home');
 });
+
+document.getElementById('studentUploadButton').addEventListener('click', () => {
+    ipcRenderer.send('navigate', 'upload_students');
+});

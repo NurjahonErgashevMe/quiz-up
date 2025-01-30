@@ -163,6 +163,9 @@ document.getElementById('back-button').addEventListener('click', () => {
     ipcRenderer.send('navigate', 'home');
 });
 
+document.getElementById('student-upload-button').addEventListener('click', () => {
+    ipcRenderer.send('navigate', 'upload_students');
+});
 
 // Function to download template
 function downloadExcelTemplate() {

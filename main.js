@@ -20,7 +20,15 @@ function createWindow() {
   const indexPath = path.join(__dirname, 'app', 'index.html');
   mainWindow.loadFile(indexPath);
 
-  // mainWindow.webContents.openDevTools();
+  const cssPath = path.join(__dirname, 'app', 'styles.css');
+  const css = fs.readFileSync(cssPath, 'utf8');
+
+  // Применение CSS
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.insertCSS(css);
+  });
+
+  mainWindow.webContents.openDevTools();
 }
 
 // Navigation handling
@@ -36,10 +44,13 @@ ipcMain.on('navigate', (event, page) => {
       filePath = path.join(basePath, 'admin', 'index.html');
       break;
     case 'upload':
-      filePath = path.join(basePath, 'upload', 'index.html');
+      filePath = path.join(basePath, 'upload', 'quiz', 'index.html');
       break;
     case 'quiz':
       filePath = path.join(basePath, 'quiz', 'index.html');
+      break;
+    case 'upload_students':
+      filePath = path.join(basePath, 'upload', 'students', 'index.html');
       break;
   }
 
