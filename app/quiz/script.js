@@ -3,6 +3,7 @@ const xlsx = require("xlsx");
 const fs = require("fs");
 const path = require("path");
 const { alert } = require('../components/alert');
+const { v4: uuidv4 } = require('uuid'); // Добавьте импорт uuid
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
@@ -15,7 +16,7 @@ let quizData;
 let selectedAnswers = [];
 
 // Event listener for the start quiz button
-document.getElementById('start-quiz').addEventListener('click', () => {
+document.getElementById('start-quiz').addEventListener('click', async () => {
     const studentSearch = document.getElementById('student-search');
     const gradeInput = document.getElementById('grade');
     const subjectInput = document.getElementById('subject');
@@ -30,6 +31,13 @@ document.getElementById('start-quiz').addEventListener('click', () => {
     studentFullName = studentSearch.value.trim();
     studentGrade = gradeInput.value;
     studentSubject = subjectInput.value;
+
+    // Проверка, проходил ли ученик данный тест ранее
+    const hasTakenTest = await checkIfStudentHasTakenTest(studentFullName, studentGrade, studentSubject);
+    if (hasTakenTest) {
+        alert.show('Вы уже проходили этот тест', "error");
+        return;
+    }
 
     initializeQuiz();
 });
@@ -195,96 +203,40 @@ function backQuestion() {
     }
 }
 
-// async function saveQuizResults(fullName, percentage) {
-//     try {
-//         // Split full name into first and last name
-//         const [firstName, lastName] = fullName.split(' ').filter(i => i);
+async function saveQuizResults(fullName, correctAnswersCount, totalQuestions, percentage, solvedQuestions) {
+  try {
+    const [firstName, lastName] = fullName.split(' ').filter(i => i);
+    const performance = percentage >= 80 ? 'great' : percentage >= 50 ? 'good' : 'bad';
+    const now = new Date();
+    const finishedAt = {
+      day: now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      time: now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+    };
 
-//         // Get the user data path
-//         const userDataPath = await ipcRenderer.invoke('get-user-data-path');
+    const result = {
+      id: uuidv4(), // Используем uuid для уникального идентификатора
+      name: firstName || fullName,
+      lastname: lastName || '',
+      correctAnswers: correctAnswersCount,
+      totalQuestions: totalQuestions,
+      completionPercentage: percentage,
+      solvedQuestions: solvedQuestions,
+      performance: performance,
+      finishedAt: finishedAt 
+    };
 
-//         // Construct the path to the single finished results file
-//         const studentsDir = path.join(userDataPath, 'assets');
+    await ipcRenderer.invoke('save-quiz-results', {
+      grade: studentGrade,
+      subject: studentSubject,
+      result: result
+    });
 
-//         // Ensure directory exists
-//         if (!fs.existsSync(studentsDir)) {
-//             fs.mkdirSync(studentsDir, { recursive: true });
-//         }
-
-//         const oldFinishedFilePath = path.join(studentsDir, 'finished.xlsx');
-//         const newFinishedFilePath = path.join(studentsDir, 'finished_new.xlsx');
-
-//         // Prepare the new result entry
-//         const newResult = {
-//             'Ism': firstName || fullName,
-//             'Familiya': lastName || '',
-//             'Sinf': studentGrade,
-//             'Ball': `${percentage}%`,
-//             'Sana': new Date().toLocaleDateString()
-//         };
-
-//         let existingData = [];
-
-//         // Check if the old file exists
-//         if (fs.existsSync(oldFinishedFilePath)) {
-//             try {
-//                 // Read existing workbook
-//                 const workbook = xlsx.readFile(oldFinishedFilePath);
-
-//                 // Use the first sheet
-//                 const sheetName = workbook.SheetNames[0] || 'Results';
-//                 const worksheet = workbook.Sheets[sheetName];
-
-//                 // Convert sheet to JSON
-//                 existingData = xlsx.utils.sheet_to_json(worksheet, { defval: '' });
-
-//                 // Find if student already exists (match name, surname, and grade)
-//                 const studentIndex = existingData.findIndex(
-//                     student => 
-//                         (student.Ism === newResult.Ism && 
-//                          student.Familiya === newResult.Familiya && 
-//                          student.Sinf === newResult.Sinf)
-//                 );
-
-//                 // If student exists, update their score
-//                 if (studentIndex !== -1) {
-//                     existingData[studentIndex] = newResult;
-//                 } else {
-//                     // If student doesn't exist, add new result
-//                     existingData.push(newResult);
-//                 }
-//             } catch (readError) {
-//                 console.error('Error reading existing file:', readError);
-//                 existingData = [newResult];
-//             }
-//         } else {
-//             // If file doesn't exist, create new data
-//             existingData = [newResult];
-//         }
-
-//         // Create new workbook
-//         const workbook = xlsx.utils.book_new();
-//         const worksheet = xlsx.utils.json_to_sheet(existingData);
-//         xlsx.utils.book_append_sheet(workbook, worksheet, 'Results');
-
-//         // Write to new file
-//         xlsx.writeFile(workbook, newFinishedFilePath);
-
-//         // Delete old file if it exists
-//         if (fs.existsSync(oldFinishedFilePath)) {
-//             fs.unlinkSync(oldFinishedFilePath);
-//         }
-
-//         // Rename new file to original filename
-//         fs.renameSync(newFinishedFilePath, oldFinishedFilePath);
-
-//         alert.show(`Результаты теста обновлены в ${oldFinishedFilePath}`, 'success');
-
-//     } catch (error) {
-//         console.error('Error saving quiz results:', error);
-//         alert.show('Не удалось сохранить результаты теста', 'error');
-//     }
-// }
+    alert.show('Результаты теста сохранены успешно', 'success');
+  } catch (error) {
+    console.error('Ошибка при сохранении результатов теста:', error);
+    alert.show('Не удалось сохранить результаты теста', 'error');
+  }
+}
 
 function showResult() {
     document.getElementById('quiz-section').style.display = 'none';
@@ -357,7 +309,14 @@ function showResult() {
     clearInterval(timer);
 
     // Save quiz results
-    // saveQuizResults(studentFullName, percentage);
+    const solvedQuestions = [];
+    currentQuestions.forEach((question, index) => {
+        if (selectedAnswers[index] + 1 === question.correctIndex) {
+            correctAnswersCount++;
+            solvedQuestions.push(index + 1);
+        }
+    });
+    saveQuizResults(studentFullName, correctAnswersCount, currentQuestions.length, percentage, solvedQuestions);
 }
 
 document.getElementById('grade').addEventListener('change', function () {
@@ -413,3 +372,24 @@ window.addEventListener('load', () => {
     document.getElementById('student-form').style.display = 'block';
     document.getElementById('quiz-section').style.display = 'none';
 });
+
+async function checkIfStudentHasTakenTest(fullName, grade, subject) {
+    try {
+        const userDataPath = await ipcRenderer.invoke('get-user-data-path');
+        const targetPath = path.join(userDataPath, 'result', grade, `${subject}.json`);
+
+        if (!fs.existsSync(targetPath)) {
+            return false;
+        }
+
+        const fileContent = fs.readFileSync(targetPath, 'utf8');
+        const existingData = JSON.parse(fileContent);
+
+        const [firstName, lastName] = fullName.split(' ').filter(i => i);
+
+        return existingData.result.some(result => result.name === firstName && result.lastname === lastName);
+    } catch (error) {
+        console.error('Ошибка при проверке прохождения теста:', error);
+        return false;
+    }
+}

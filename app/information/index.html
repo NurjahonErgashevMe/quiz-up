@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Информация о результатах</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="information-container" opened="form">
+      <button class="back-button" id="back-button">← Orqaga</button>
+      <div id="information-form" class="information-form">
+        <h2>Sinf va Fanni tanlang</h2>
+        <div class="form-group">
+          <label for="grade">Sinf:</label>
+          <select id="grade" required>
+            <option value="">Sinfni tanlang</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="subject">Fan:</label>
+          <select id="subject" required>
+            <option value="">Fanni tanlang</option>
+            <option value="matematika">Математика</option>
+            <option value="fizika">Физика</option>
+            <option value="kimyo">Кимё</option>
+            <option value="biologiya">Биология</option>
+            <option value="tarix">Тарих</option>
+            <option value="geografiya">География</option>
+          </select>
+        </div>
+        <button id="view-results">Ko'rish</button>
+      </div>
+      <div id="results-section" style="display: none">
+        <div class="header">
+          <h2>Natijalar</h2>
+          <button class="download-button" id="download-excel">
+            Yuklab olish
+          </button>
+        </div>
+
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Ism</th>
+              <th>Familiya</th>
+              <th>Jami Savollar</th>
+              <th>Tog'ri Javoblar</th>
+              <th>Tog'ri Javoblar (%)</th>
+              <th>Tog'ri bajarilgan savollar</th>
+              <th>Bajarilgan kun</th>
+              <th>Bajarilgan vaqt</th>
+            </tr>
+          </thead>
+          <tbody id="results-body">
+            <!-- Данные будут вставлены здесь -->
+          </tbody>
+        </table>
+        <div class="button-container">
+          <!-- <button class="back-button" id="back-to-form">← Orqaga</button> -->
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

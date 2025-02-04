@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "gsap": "^3.12.5",
-    "xlsx": "^0.18.5"
+    "uuid": "^11.0.5",
+    "xlsx": "^0.18.5",
+    "xlsx-style": "^0.8.13"
   },
   "build": {
     "appId": "com.quizapp.quizup",

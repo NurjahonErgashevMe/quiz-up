@@ -87,115 +87,124 @@
 //     ipcRenderer.send('navigate', 'home');
 // });
 
+const { ipcRenderer } = require("electron");
+const path = require("path");
+const fs = require("fs");
 
+document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-const { ipcRenderer } = require('electron');
-const path = require('path');
-const fs = require('fs');
+  const grade = document.getElementById("grade").value;
+  const subject = document.getElementById("subject").value;
+  const fileInput = document.getElementById("excelFile");
 
-document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  if (!grade || !subject || !fileInput.files[0]) {
+    showError("Barcha maydonlarni to'ldiring");
+    return;
+  }
 
-    const grade = document.getElementById('grade').value;
-    const subject = document.getElementById('subject').value;
-    const fileInput = document.getElementById('excelFile');
+  try {
+    const fileBuffer = await readFileAsBuffer(fileInput.files[0]);
 
-    if (!grade || !subject || !fileInput.files[0]) {
-        showError('Barcha maydonlarni to\'ldiring');
-        return;
+    // console.log({ grade, subject, fileBuffer })
+    // Отправляем данные в main-процесс для сохранения файла
+    const result = await ipcRenderer.invoke("save-file", {
+      grade,
+      subject,
+      fileBuffer,
+    });
+
+    if (result.success) {
+      showSuccess(`Файл сохранен: ${result.targetPath}`);
+    } else {
+      throw new Error(result.error);
     }
 
-
-    try {
-        const fileBuffer = await readFileAsBuffer(fileInput.files[0]);
-
-        // console.log({ grade, subject, fileBuffer })
-        // Отправляем данные в main-процесс для сохранения файла
-        const result = await ipcRenderer.invoke('save-file', {
-            grade,
-            subject,
-            fileBuffer,
-        });
-
-        if (result.success) {
-            showSuccess(`Файл сохранен: ${result.targetPath}`);
-        } else {
-            throw new Error(result.error);
-        }
-
-        document.getElementById('uploadForm').reset();
-    } catch (error) {
-        console.error('Ошибка сохранения файла:', error);
-        showError('Faylni yuklashda xatolik yuz berdi');
-    }
+    document.getElementById("uploadForm").reset();
+  } catch (error) {
+    console.error("Ошибка сохранения файла:", error);
+    showError("Faylni yuklashda xatolik yuz berdi");
+  }
 });
 
 function readFileAsBuffer(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(Buffer.from(reader.result));
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
-    });
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(Buffer.from(reader.result));
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
 }
 
 function showSuccess(message) {
-    const successMessage = document.getElementById('message');
-    successMessage.classList.add('success');
-    successMessage.textContent = message;
-    successMessage.style.display = 'block';
-    setTimeout(() => {
-        successMessage.style.display = 'none';
-    }, 3000);
+  const successMessage = document.getElementById("message");
+  successMessage.classList.add("success");
+  successMessage.textContent = message;
+  successMessage.style.display = "block";
+  setTimeout(() => {
+    successMessage.style.display = "none";
+  }, 3000);
 }
 
 function showError(message) {
-    const errorMessage = document.getElementById('message');
-    errorMessage.classList.add('error');
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
-    setTimeout(() => {
-        errorMessage.style.display = 'none';
-    }, 3000);
+  const errorMessage = document.getElementById("message");
+  errorMessage.classList.add("error");
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+  setTimeout(() => {
+    errorMessage.style.display = "none";
+  }, 3000);
 }
 
-document.getElementById('back-button').addEventListener('click', () => {
-    ipcRenderer.send('navigate', 'home');
+document.getElementById("back-button").addEventListener("click", () => {
+  ipcRenderer.send("navigate", "home");
 });
 
-document.getElementById('student-upload-button').addEventListener('click', () => {
-    ipcRenderer.send('navigate', 'upload_students');
-});
+document
+  .getElementById("student-upload-button")
+  .addEventListener("click", () => {
+    ipcRenderer.send("navigate", "upload_students");
+  });
 
 // Function to download template
 function downloadExcelTemplate() {
-    try {
-        const templatePath = path.join(__dirname, '..', 'assets', 'demo.xlsx');
+  try {
+    const templatePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "assets",
+      "demo.xlsx"
+    );
 
-        // Read the file
-        const fileContent = fs.readFileSync(templatePath);
+    // Read the file
+    const fileContent = fs.readFileSync(templatePath);
 
-        // Convert to Blob
-        const blob = new Blob([fileContent], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    // Convert to Blob
+    const blob = new Blob([fileContent], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-        // Create download link
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'demo.xlsx';
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "demo.xlsx";
 
-        // Trigger download
-        document.body.appendChild(a);
-        a.click();
+    // Trigger download
+    document.body.appendChild(a);
+    a.click();
 
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-    } catch (error) {
-        console.error('Error downloading template:', error);
-        showError('Ошибка при скачивании шаблона');
-    }
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error("Error downloading template:", error);
+    showError("Ошибка при скачивании шаблона");
+  }
 }
 
 // Add event listener for template download
-document.getElementById('downloadTemplate').addEventListener('click', downloadExcelTemplate);
+document
+  .getElementById("downloadTemplate")
+  .addEventListener("click", downloadExcelTemplate);

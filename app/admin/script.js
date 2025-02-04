@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
     const password = document.getElementById('password').value;
 
     if (username === 'admin' && password === 'admin') {
-        ipcRenderer.send('navigate', 'upload');
+        ipcRenderer.send('navigate', 'information');
     } else {
         document.getElementById('error-message').style.display = 'block';
         setTimeout(() => {

@@ -1,0 +1,115 @@
+.information-container {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 20px auto;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.information-container[opened="form"] {
+  max-width: 500px;
+}
+.information-container[opened="information"] {
+  max-width: 1000px;
+}
+
+.information-form {
+  text-align: center;
+  padding: 20px;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.information-form h2 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  font-weight: 500;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group select:focus {
+  border-color: #6e8efb;
+  outline: none;
+}
+
+#view-results {
+  width: 100%;
+  background: #6e8efb;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#view-results:hover {
+  background: #5d7de9;
+}
+
+.download-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}
+
+.download-button:hover {
+  background: #4CAF50;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.results-table th {
+  background: #f8f9fa;
+  font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+  background: #f2f2f2;
+}
