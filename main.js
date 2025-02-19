@@ -55,6 +55,12 @@ ipcMain.on("navigate", (event, page) => {
     case "information":
       filePath = path.join(basePath, "information", "index.html");
       break;
+    // case "results":
+    //   filePath = path.join(basePath, "results", "index.html");
+    //   break;
+    case "redirecter":
+      filePath = path.join(basePath, "redirecter", "index.html");
+      break;
   }
 
   if (filePath) {

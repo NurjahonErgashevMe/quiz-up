@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-</head>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
+  <body>
     <button class="back-button" id="back-button">← Ortga</button>
     <div class="login-container">
-        <h2>Administrator kirishi</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Login</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Parol</label>
-                <input type="password" id="password" required>
-            </div>
-            <button type="submit">Kirish</button>
-            <div id="error-message" class="error-message">Login yoki parol noto'g'ri</div>
-        </form>
+      <h2>Administrator kirishi</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Login</label>
+          <input type="text" id="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Parol</label>
+          <input type="password" id="password" required />
+        </div>
+        <button type="submit">Kirish</button>
+        <div id="error-message" class="error-message">
+          Login yoki parol noto'g'ri
+        </div>
+      </form>
     </div>
     <script src="script.js"></script>
-</body>
-
+  </body>
 </html>

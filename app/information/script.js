@@ -201,6 +201,18 @@ document
     }
   });
 
+document.getElementById('results-button').addEventListener('click', () => {
+    ipcRenderer.send('navigate', 'results');
+});
+
+document.getElementById('upload-button').addEventListener('click', () => {
+    ipcRenderer.send('navigate', 'upload');
+});
+
+document.getElementById('back-button').addEventListener('click', () => {
+    ipcRenderer.send('navigate', 'admin');
+});
+
 function openAttr() {
   const informationContainer = document.querySelector(".information-container");
   const currentOpened = informationContainer.getAttribute("opened");
