@@ -28,7 +28,7 @@ function createWindow() {
     mainWindow.webContents.insertCSS(css);
   });
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 // Navigation handling
